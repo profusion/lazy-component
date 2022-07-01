@@ -1,12 +1,5 @@
-import type { PropsWithRef, PropsWithChildren, ReactNode } from 'react';
+import type { PropsWithRef, PropsWithChildren } from 'react';
 import React, { Suspense } from 'react';
-
-interface WrapperProps {
-  children: ReactNode;
-  name: string;
-}
-
-export type WrapperType = ({ children, name }: WrapperProps) => JSX.Element;
 
 export type LazyComponentProps = JSX.IntrinsicAttributes;
 
@@ -21,33 +14,23 @@ export type LazyComponentType<T> = React.FunctionComponent<
 const LazyComponent = <T extends LazyComponentProps>(
   name: string,
   factory: LazyComponentFactory<T>,
-  fallback: JSX.Element,
-  Wrapper?: WrapperType,
+  fallback?: JSX.Element,
 ): LazyComponentType<T> => {
   const TheLazyComponent = React.lazy(factory);
   const Component = (
     props: PropsWithRef<PropsWithChildren<T>>,
-  ): JSX.Element => {
-    const SuspenseWithLazyComponent = (): JSX.Element => (
-      <Suspense fallback={fallback}>
-        <TheLazyComponent {...props} />
-      </Suspense>
-    );
-    if (Wrapper)
-      return (
-        <Wrapper name={name}>
-          <SuspenseWithLazyComponent />
-        </Wrapper>
-      );
-
-    return <SuspenseWithLazyComponent />;
-  };
+  ): JSX.Element => (
+    <Suspense fallback={fallback}>
+      <TheLazyComponent {...props} />
+    </Suspense>
+  );
   Component.displayName = `LazyComponent(${name})`;
   return Component;
 };
 
 interface LazyComponentSpecDetail {
   component: LazyComponentFactory<LazyComponentProps>;
+  fallback?: JSX.Element;
 }
 
 export type LazyComponentsSpec =
@@ -58,27 +41,25 @@ export type LazyComponentsResult<S> = {
   [K in keyof S]: LazyComponentType<LazyComponentProps>;
 };
 
-export interface LazyComponentOptions {
-  fallback: JSX.Element;
-  Wrapper?: WrapperType;
-}
-
 export const createLazyComponents = <
-  S extends Record<string, LazyComponentsSpec>
+  S extends Record<string, LazyComponentsSpec>,
 >(
   specs: S,
-  { fallback, Wrapper }: LazyComponentOptions,
+  fallback?: JSX.Element,
 ): LazyComponentsResult<S> =>
   Object.entries(specs).reduce(
     (result, [name, factory]): LazyComponentsResult<S> => {
-      const { component } = (typeof factory === 'function'
-        ? { component: factory, fallback }
-        : factory) as LazyComponentSpecDetail;
+      const { component, fallback: fallbackOverride } = (
+        typeof factory === 'function'
+          ? { component: factory, fallback }
+          : factory
+      ) as LazyComponentSpecDetail;
       // eslint-disable-next-line no-param-reassign
-      result = {
-        ...result,
-        [name]: LazyComponent(name, component, fallback, Wrapper),
-      };
+      result[name as keyof S] = LazyComponent(
+        name,
+        component,
+        fallbackOverride || fallback,
+      );
       return result;
     },
     {} as LazyComponentsResult<S>,
