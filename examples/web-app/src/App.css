@@ -1,0 +1,48 @@
+*, *::after, *::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.loading {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: 1vh;
+  width: 100%;
+  opacity: 0.7;
+  background-color: black;
+  color: white;
+  z-index: 1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 1vh;
+}
+
+.container ul {
+  display: flex;
+  justify-content: space-around;
+  list-style-type: none;
+  padding: 2em;
+  background-color: grey;
+  color: white;
+}
+
+li {
+  padding: 1em;
+  background-color: black;
+  border-radius: 0.5em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
