@@ -15,6 +15,7 @@
   },
   "scripts": {
     "install-peers": "install-peers",
+    "start:example": "cd examples/web-app && yarn install && yarn start",
     "check-types": "tsc --noEmit",
     "run-lint": "eslint --max-warnings=0 --ext .ts lib examples",
     "lint": "run-s check-types run-lint",
