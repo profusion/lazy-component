@@ -2,8 +2,8 @@
   "name": "@profusion/lazy-component",
   "version": "0.0.1",
   "description": "Lazy loading in React components",
-  "main": "./build/lib/index.js",
-  "types": "./build/lib/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
   "author": "Fábio Mendes <fabio.mendes@profusion.mobi>",
   "license": "MIT",
   "repository": "https://github.com/profusion/lazy-component",
@@ -15,12 +15,12 @@
   },
   "scripts": {
     "install-peers": "install-peers",
+    "start:example": "cd examples/web-app && yarn install && yarn start",
     "check-types": "tsc --noEmit",
     "run-lint": "eslint --max-warnings=0 --ext .ts lib examples",
     "lint": "run-s check-types run-lint",
     "build": "tsc",
     "test": "jest",
-    "postinstall": "install-peers",
     "prepublishOnly": "tsc"
   },
   "devDependencies": {

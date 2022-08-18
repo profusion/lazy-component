@@ -10,3 +10,4 @@
 /*.tgz
 /build/examples
 /.github
+/.husky
